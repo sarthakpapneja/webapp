@@ -14,6 +14,8 @@ export default function Dashboard() {
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
         if (!auth?.loading && !auth?.user) {
             router.push('/login');
@@ -29,107 +31,166 @@ export default function Dashboard() {
         }
     };
 
-    const filteredTasks = tasks.filter((task: Task) => { // Type the task parameter
-        if (filter === 'all') return true;
-        return task.status === filter;
+    const filteredTasks = tasks.filter((task: Task) => {
+        const matchesFilter = filter === 'all' || task.status === filter;
+        const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchesFilter && matchesSearch;
     });
 
     if (auth?.loading || (loading && tasks.length === 0)) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+        );
     }
 
     if (!auth?.user) {
-        return null; // Will redirect
+        return null;
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen pb-12">
             <Navbar />
-            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
 
-                    {/* Add Task Form */}
-                    <div className="bg-white overflow-hidden shadow rounded-lg mb-8">
-                        <div className="px-4 py-5 sm:p-6">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Add New Task</h3>
-                            <form onSubmit={handleAddTask} className="space-y-4">
-                                <div>
-                                    <input
-                                        type="text"
-                                        required
-                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-gray-900 placeholder-gray-400"
-                                        placeholder="Task Title"
-                                        value={newTaskTitle}
-                                        onChange={(e) => setNewTaskTitle(e.target.value)}
-                                    />
+            <main className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="md:flex md:items-center md:justify-between mb-8">
+                    <div className="min-w-0 flex-1">
+                        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                            Dashboard
+                        </h2>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Sidebar / Add Task */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <section aria-labelledby="add-task-title">
+                            <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+                                <div className="px-4 py-5 sm:p-6">
+                                    <h3 id="add-task-title" className="text-base font-semibold leading-6 text-gray-900">
+                                        New Task
+                                    </h3>
+                                    <div className="mt-2 text-sm text-gray-500">
+                                        <p>Create a new task to track your progress.</p>
+                                    </div>
+                                    <form onSubmit={handleAddTask} className="mt-5 space-y-4">
+                                        <div>
+                                            <input
+                                                type="text"
+                                                required
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
+                                                placeholder="Task Title"
+                                                value={newTaskTitle}
+                                                onChange={(e) => setNewTaskTitle(e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <textarea
+                                                rows={3}
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
+                                                placeholder="Description (Optional)"
+                                                value={newTaskDescription}
+                                                onChange={(e) => setNewTaskDescription(e.target.value)}
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            className="flex w-full justify-center rounded-md bg-gray-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+                                        >
+                                            Add Task
+                                        </button>
+                                    </form>
                                 </div>
-                                <div>
-                                    <textarea
-                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-gray-900 placeholder-gray-400"
-                                        placeholder="Task Description (Optional)"
-                                        value={newTaskDescription}
-                                        onChange={(e) => setNewTaskDescription(e.target.value)}
-                                    />
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Main Content / Task List */}
+                    <div className="lg:col-span-8 space-y-6">
+                        {/* Controls: Search & Filter */}
+                        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+                            {/* Search */}
+                            <div className="relative w-full sm:w-96">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clipRule="evenodd" />
+                                    </svg>
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                >
-                                    Add Task
-                                </button>
-                            </form>
+                                <input
+                                    type="text"
+                                    className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
+                                    placeholder="Search tasks..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Filters */}
+                            <div className="flex bg-gray-100 p-0.5 rounded-lg">
+                                {(['all', 'pending', 'completed'] as const).map((f) => (
+                                    <button
+                                        key={f}
+                                        onClick={() => setFilter(f)}
+                                        className={`px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-all ${filter === f
+                                                ? 'bg-white text-gray-900 shadow-sm'
+                                                : 'text-gray-500 hover:text-gray-700'
+                                            }`}
+                                    >
+                                        {f}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Task Filters */}
-                    <div className="mb-4 flex space-x-2">
-                        <button
-                            onClick={() => setFilter('all')}
-                            className={`px-3 py-1 rounded-md text-sm font-medium ${filter === 'all' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                        >
-                            All
-                        </button>
-                        <button
-                            onClick={() => setFilter('pending')}
-                            className={`px-3 py-1 rounded-md text-sm font-medium ${filter === 'pending' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                        >
-                            Pending
-                        </button>
-                        <button
-                            onClick={() => setFilter('completed')}
-                            className={`px-3 py-1 rounded-md text-sm font-medium ${filter === 'completed' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                        >
-                            Completed
-                        </button>
-                    </div>
-
-                    {/* Task List */}
-                    <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                        <ul className="divide-y divide-gray-200">
+                        {/* List */}
+                        <ul role="list" className="grid grid-cols-1 gap-4">
                             {filteredTasks.length === 0 ? (
-                                <li className="px-4 py-4 sm:px-6 text-center text-gray-500">No tasks found.</li>
+                                <li className="text-center py-12 bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+                                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <h3 className="mt-2 text-sm font-semibold text-gray-900">No tasks found</h3>
+                                    <p className="mt-1 text-sm text-gray-500">Get started by creating a new task or Adjusting your search.</p>
+                                </li>
                             ) : (
-                                filteredTasks.map((task: Task) => ( // Type the task parameter
-                                    <li key={task._id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150 ease-in-out">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center">
+                                filteredTasks.map((task: Task) => (
+                                    <li
+                                        key={task._id}
+                                        className="relative flex justify-between gap-x-6 py-5 px-6 hover:bg-gray-50 bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl transition-colors"
+                                    >
+                                        <div className="flex min-w-0 gap-x-4">
+                                            <div className="flex flex-col items-center justify-start pt-1">
                                                 <input
                                                     type="checkbox"
                                                     checked={task.status === 'completed'}
                                                     onChange={() => updateTask(task._id, { status: task.status === 'completed' ? 'pending' : 'completed' })}
-                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900 cursor-pointer"
                                                 />
-                                                <div className="ml-3">
-                                                    <p className={`text-sm font-medium text-indigo-600 truncate ${task.status === 'completed' ? 'line-through text-gray-400' : ''}`}>
-                                                        {task.title}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500">{task.description}</p>
-                                                </div>
+                                            </div>
+                                            <div className="min-w-0 flex-auto">
+                                                <p className={`text-sm font-semibold leading-6 text-gray-900 ${task.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
+                                                    {task.title}
+                                                </p>
+                                                <p className="mt-1 flex text-xs leading-5 text-gray-500 truncate">
+                                                    {task.description}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex shrink-0 items-center gap-x-4">
+                                            <div className={`hidden sm:flex sm:flex-col sm:items-end`}>
+                                                <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${task.status === 'completed'
+                                                        ? 'bg-green-50 text-green-700 ring-green-600/20'
+                                                        : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
+                                                    }`}>
+                                                    {task.status === 'completed' ? 'Completed' : 'Pending'}
+                                                </span>
                                             </div>
                                             <button
                                                 onClick={() => deleteTask(task._id)}
-                                                className="text-red-600 hover:text-red-900 text-sm font-medium"
+                                                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                             >
                                                 Delete
                                             </button>
@@ -140,7 +201,7 @@ export default function Dashboard() {
                         </ul>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
