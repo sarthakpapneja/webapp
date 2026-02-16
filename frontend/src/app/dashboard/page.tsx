@@ -81,7 +81,7 @@ export default function Dashboard() {
                                             <input
                                                 type="text"
                                                 required
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                 placeholder="Task Title"
                                                 value={newTaskTitle}
                                                 onChange={(e) => setNewTaskTitle(e.target.value)}
@@ -90,7 +90,7 @@ export default function Dashboard() {
                                         <div>
                                             <textarea
                                                 rows={3}
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                 placeholder="Description (Optional)"
                                                 value={newTaskDescription}
                                                 onChange={(e) => setNewTaskDescription(e.target.value)}
@@ -98,7 +98,7 @@ export default function Dashboard() {
                                         </div>
                                         <button
                                             type="submit"
-                                            className="flex w-full justify-center rounded-md bg-gray-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+                                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors"
                                         >
                                             Add Task
                                         </button>
@@ -121,7 +121,7 @@ export default function Dashboard() {
                                 </div>
                                 <input
                                     type="text"
-                                    className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     placeholder="Search tasks..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -129,14 +129,14 @@ export default function Dashboard() {
                             </div>
 
                             {/* Filters */}
-                            <div className="flex bg-gray-100 p-0.5 rounded-lg">
+                            <div className="flex bg-gray-50 p-0.5 rounded-lg border border-gray-200">
                                 {(['all', 'pending', 'completed'] as const).map((f) => (
                                     <button
                                         key={f}
                                         onClick={() => setFilter(f)}
                                         className={`px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-all ${filter === f
-                                                ? 'bg-white text-gray-900 shadow-sm'
-                                                : 'text-gray-500 hover:text-gray-700'
+                                                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5'
+                                                : 'text-gray-500 hover:text-gray-900'
                                             }`}
                                     >
                                         {f}
@@ -149,8 +149,8 @@ export default function Dashboard() {
                         <ul role="list" className="grid grid-cols-1 gap-4">
                             {filteredTasks.length === 0 ? (
                                 <li className="text-center py-12 bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
-                                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                     <h3 className="mt-2 text-sm font-semibold text-gray-900">No tasks found</h3>
                                     <p className="mt-1 text-sm text-gray-500">Get started by creating a new task or Adjusting your search.</p>
@@ -159,7 +159,7 @@ export default function Dashboard() {
                                 filteredTasks.map((task: Task) => (
                                     <li
                                         key={task._id}
-                                        className="relative flex justify-between gap-x-6 py-5 px-6 hover:bg-gray-50 bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl transition-colors"
+                                        className={`relative flex justify-between gap-x-6 py-5 px-6 hover:bg-gray-50 bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl transition-all ${task.status === 'completed' ? 'opacity-75' : ''}`}
                                     >
                                         <div className="flex min-w-0 gap-x-4">
                                             <div className="flex flex-col items-center justify-start pt-1">
@@ -167,7 +167,7 @@ export default function Dashboard() {
                                                     type="checkbox"
                                                     checked={task.status === 'completed'}
                                                     onChange={() => updateTask(task._id, { status: task.status === 'completed' ? 'pending' : 'completed' })}
-                                                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900 cursor-pointer"
+                                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
                                                 />
                                             </div>
                                             <div className="min-w-0 flex-auto">
@@ -183,14 +183,14 @@ export default function Dashboard() {
                                             <div className={`hidden sm:flex sm:flex-col sm:items-end`}>
                                                 <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${task.status === 'completed'
                                                         ? 'bg-green-50 text-green-700 ring-green-600/20'
-                                                        : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
+                                                        : 'bg-indigo-50 text-indigo-700 ring-indigo-600/10'
                                                     }`}>
                                                     {task.status === 'completed' ? 'Completed' : 'Pending'}
                                                 </span>
                                             </div>
                                             <button
                                                 onClick={() => deleteTask(task._id)}
-                                                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-50 hover:text-red-600 hover:ring-red-300 transition-all"
                                             >
                                                 Delete
                                             </button>
