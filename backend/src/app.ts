@@ -20,4 +20,8 @@ app.get('/', (req, res) => {
     res.send('Nexus Hub API is running');
 });
 
+app.get('/api', (req, res) => {
+    res.send('Nexus Hub API is running');
+});
+
 export default app;
