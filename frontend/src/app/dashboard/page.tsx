@@ -81,7 +81,7 @@ export default function Dashboard() {
                                             <input
                                                 type="text"
                                                 required
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                 placeholder="Task Title"
                                                 value={newTaskTitle}
                                                 onChange={(e) => setNewTaskTitle(e.target.value)}
@@ -90,7 +90,7 @@ export default function Dashboard() {
                                         <div>
                                             <textarea
                                                 rows={3}
-                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                 placeholder="Description (Optional)"
                                                 value={newTaskDescription}
                                                 onChange={(e) => setNewTaskDescription(e.target.value)}
@@ -135,8 +135,8 @@ export default function Dashboard() {
                                         key={f}
                                         onClick={() => setFilter(f)}
                                         className={`px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-all ${filter === f
-                                                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5'
-                                                : 'text-gray-500 hover:text-gray-900'
+                                            ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5'
+                                            : 'text-gray-500 hover:text-gray-900'
                                             }`}
                                     >
                                         {f}
@@ -182,8 +182,8 @@ export default function Dashboard() {
                                         <div className="flex shrink-0 items-center gap-x-4">
                                             <div className={`hidden sm:flex sm:flex-col sm:items-end`}>
                                                 <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${task.status === 'completed'
-                                                        ? 'bg-green-50 text-green-700 ring-green-600/20'
-                                                        : 'bg-indigo-50 text-indigo-700 ring-indigo-600/10'
+                                                    ? 'bg-green-50 text-green-700 ring-green-600/20'
+                                                    : 'bg-indigo-50 text-indigo-700 ring-indigo-600/10'
                                                     }`}>
                                                     {task.status === 'completed' ? 'Completed' : 'Pending'}
                                                 </span>
