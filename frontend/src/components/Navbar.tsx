@@ -8,35 +8,38 @@ export default function Navbar() {
     const auth = useContext(AuthContext);
 
     return (
-        <nav className="bg-white shadow-md">
+        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
-                    <div className="flex">
-                        <Link href="/" className="flex-shrink-0 flex items-center font-bold text-xl text-indigo-600">
-                            Nexus Hub
+                    <div className="flex items-center">
+                        <Link href="/" className="flex-shrink-0 flex items-center gap-2">
+                            <span className="text-xl font-semibold text-gray-900 tracking-tight">
+                                Nexus Hub
+                            </span>
                         </Link>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-6">
                         {auth?.user ? (
                             <>
-                                <Link href="/dashboard" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
+                                <Link href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                                     Dashboard
                                 </Link>
-                                <div className="text-gray-900 text-sm font-medium mr-2">Welcome, {auth.user.name}</div>
+                                <div className="h-4 w-px bg-gray-300"></div>
+                                <div className="text-sm font-medium text-gray-900">{auth.user.name}</div>
                                 <button
                                     onClick={auth.logout}
-                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                                    className="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors"
                                 >
-                                    Logout
+                                    Log out
                                 </button>
                             </>
                         ) : (
                             <>
-                                <Link href="/login" className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                                    Login
+                                <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                                    Log in
                                 </Link>
-                                <Link href="/register" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                                    Sign Up
+                                <Link href="/register" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+                                    Sign up
                                 </Link>
                             </>
                         )}
