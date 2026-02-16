@@ -8,15 +8,12 @@ export default function Navbar() {
     const auth = useContext(AuthContext);
 
     return (
-        <nav className="border-b border-gray-200 sticky top-0 z-50 bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60">
+        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
                         <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-                                N
-                            </div>
-                            <span className="text-lg font-bold text-gray-900 tracking-tight font-mono">
+                            <span className="text-xl font-bold text-indigo-600 tracking-tight">
                                 Nexus Hub
                             </span>
                         </Link>
@@ -28,7 +25,7 @@ export default function Navbar() {
                                     Dashboard
                                 </Link>
                                 <div className="h-4 w-px bg-gray-300"></div>
-                                <div className="text-sm font-medium text-gray-700 font-mono">{auth.user.name}</div>
+                                <div className="text-sm font-medium text-gray-700">{auth.user.name}</div>
                                 <button
                                     onClick={auth.logout}
                                     className="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors"
@@ -41,7 +38,7 @@ export default function Navbar() {
                                 <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                                     Log in
                                 </Link>
-                                <Link href="/register" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+                                <Link href="/register" className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
                                     Sign up
                                 </Link>
                             </>
