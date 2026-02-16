@@ -58,7 +58,7 @@ export default function Dashboard() {
                                     <input
                                         type="text"
                                         required
-                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-gray-900 placeholder-gray-400"
                                         placeholder="Task Title"
                                         value={newTaskTitle}
                                         onChange={(e) => setNewTaskTitle(e.target.value)}
@@ -66,7 +66,7 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     <textarea
-                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-gray-900 placeholder-gray-400"
                                         placeholder="Task Description (Optional)"
                                         value={newTaskDescription}
                                         onChange={(e) => setNewTaskDescription(e.target.value)}
